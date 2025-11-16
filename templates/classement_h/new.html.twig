@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New ClassementH{% endblock %}
+
+{% block body %}
+    <h1>Create new ClassementH</h1>
+
+    {{ include('classement_h/_form.html.twig') }}
+
+    <a href="{{ path('app_classement_h_index') }}">back to list</a>
+{% endblock %}

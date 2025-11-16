@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration{% endblock %}
+
+{% block body %}
+    <h1>Tableau de bord Administrateur</h1>
+
+    <ul>
+        <li><a href="{{ path('app_hotel_index') }}">Gérer les Hôtels</a></li>
+        <li><a href="{{ path('app_chambre_index') }}">Gérer les Chambres</a></li>
+        <li><a href="{{ path('app_classement_h_index') }}">Gérer les Classements</a></li>
+        <li><a href="{{ path('app_service_index') }}">Gérer les Services</a></li>
+    </ul>
+
+{% endblock %}

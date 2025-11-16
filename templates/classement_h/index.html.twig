@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ClassementH index{% endblock %}
+
+{% block body %}
+    <h1>ClassementH index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>BasePrice</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for classement_h in classement_hs %}
+            <tr>
+                <td>{{ classement_h.id }}</td>
+                <td>{{ classement_h.name }}</td>
+                <td>{{ classement_h.description }}</td>
+                <td>{{ classement_h.basePrice }}</td>
+                <td>
+                    <a href="{{ path('app_classement_h_show', {'id': classement_h.id}) }}">show</a>
+                    <a href="{{ path('app_classement_h_edit', {'id': classement_h.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_classement_h_new') }}">Create new</a>
+{% endblock %}
