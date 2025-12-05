@@ -15,6 +15,36 @@ class ChambreRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Chambre::class);
     }
+    public function findLate(): array
+    {
+    $now = new \DateTimeImmutable();
+
+    return $this->createQueryBuilder('t')
+        ->andWhere('t.isDone = :done')
+        ->andWhere('t.endDate < :now')
+        ->setParameter('done', false)
+        ->setParameter('now', $now)
+        ->orderBy('t.endDate', 'ASC')
+        ->getQuery()
+        ->getResult();
+    }
+    public function findWithCurrentWorks(): array
+{
+    $now = new \DateTimeImmutable();
+
+    return $this->createQueryBuilder('c')
+        ->innerJoin('c.travaux', 't')
+        ->addSelect('t')
+        ->andWhere('t.isDone = :done')
+        ->andWhere('t.startDate <= :now')
+        ->andWhere('t.endDate >= :now')
+        ->setParameter('done', false)
+        ->setParameter('now', $now)
+        ->distinct()                      
+        ->orderBy('c.id', 'ASC')          
+        ->getQuery()
+        ->getResult();
+}
 
     //    /**
     //     * @return Chambre[] Returns an array of Chambre objects

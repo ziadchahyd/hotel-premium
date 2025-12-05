@@ -18,8 +18,19 @@ class ServiceType extends AbstractType
             ->add('description')
             ->add('chambres', EntityType::class, [
                 'class' => Chambre::class,
-                'choice_label' => 'id',
+                
+                'choice_label' => function (Chambre $chambre) {
+                    
+                    return sprintf(
+                        'Chambre %d - %s (%.2f €/nuit)',
+                        $chambre->getNumber(),
+                        $chambre->getHotel()?->getName() ?? 'Sans hôtel',
+                        $chambre->getPricePerNight()
+                    );
+                },
                 'multiple' => true,
+                'required' => false,      
+                'by_reference' => false, 
             ])
         ;
     }

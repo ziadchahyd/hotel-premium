@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Chambre;
-use App\Entity\ClassementH;
+use App\Entity\ClassementH; // ou App\Entity\Classement si ton entité s'appelle comme ça
 use App\Entity\Hotel;
 use App\Entity\Service;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -21,18 +21,36 @@ class ChambreType extends AbstractType
             ->add('area')
             ->add('pricePerNight')
             ->add('isAvailable')
+
+            // Hôtel de la chambre
             ->add('hotel', EntityType::class, [
                 'class' => Hotel::class,
-                'choice_label' => 'id',
+                // On affiche le nom de l'hôtel, pas l'id
+                'choice_label' => function (Hotel $hotel) {
+                    return $hotel->getName();
+                },
+                'placeholder' => 'Choisir un hôtel',
             ])
-            ->add('Classement', EntityType::class, [
+
+            // Classement de la chambre
+            ->add('classement', EntityType::class, [
                 'class' => ClassementH::class,
-                'choice_label' => 'id',
+                // pareil, on montre quelque chose de lisible
+                'choice_label' => function (ClassementH $classement) {
+                    return $classement->getName();
+                },
+                'placeholder' => 'Choisir un classement',
             ])
+
+            // Services associés à la chambre (ManyToMany)
             ->add('services', EntityType::class, [
                 'class' => Service::class,
-                'choice_label' => 'id',
+                'choice_label' => function (Service $service) {
+                    return $service->getName();
+                },
                 'multiple' => true,
+                'required' => false,      // ✅ on peut créer la chambre sans services au début
+                'by_reference' => false,  // ✅ gère bien le ManyToMany (addService/removeService)
             ])
         ;
     }

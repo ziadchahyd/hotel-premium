@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Travaux en retard{% endblock %}
+
+{% block body %}
+    <h1>Travaux en retard</h1>
+
+    {% if travaux is empty %}
+        <p>Aucun travail en retard 🎉</p>
+    {% else %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Chambre</th>
+                    <th>Hôtel</th>
+                    <th>Titre</th>
+                    <th>Fin prévue</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for t in travaux %}
+                <tr>
+                    <td>Chambre {{ t.chambre.number }}</td>
+                    <td>{{ t.chambre.hotel.name }}</td>
+                    <td>{{ t.title }}</td>
+                    <td>{{ t.endDate|date('d/m/Y') }}</td>
+                    <td><span style="color: orange; font-weight: bold;">En retard</span></td>
+                    <td>
+                        <a href="{{ path('app_travaux_show', {'id': t.id}) }}">Voir</a> |
+                        <a href="{{ path('app_travaux_edit', {'id': t.id}) }}">Modifier</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <a href="{{ path('app_admin') }}">Retour au tableau de bord</a>
+{% endblock %}

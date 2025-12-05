@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Travaux index{% endblock %}
+
+{% block body %}
+    <h1>Travaux index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>StartDate</th>
+                <th>EndDate</th>
+                <th>IsDone</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for travaux in travauxes %}
+            <tr>
+                <td>{{ travaux.id }}</td>
+                <td>{{ travaux.title }}</td>
+                <td>{{ travaux.description }}</td>
+                <td>{{ travaux.startDate ? travaux.startDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ travaux.endDate ? travaux.endDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ travaux.isDone ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_travaux_show', {'id': travaux.id}) }}">show</a>
+                    <a href="{{ path('app_travaux_edit', {'id': travaux.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_travaux_new') }}">Create new</a>
+{% endblock %}

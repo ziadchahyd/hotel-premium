@@ -78,4 +78,14 @@ final class ChambreController extends AbstractController
 
         return $this->redirectToRoute('app_chambre_index', [], Response::HTTP_SEE_OTHER);
     }
+    #[Route('/chambre/en-travaux', name: 'app_chambre_en_travaux', methods: ['GET'])]
+    public function enTravaux(ChambreRepository $chambreRepository): Response
+    {
+    $chambres = $chambreRepository->findWithCurrentWorks();
+
+    return $this->render('chambre/en_travaux.html.twig', [
+        'chambres' => $chambres,
+    ]);
+    }
+
 }

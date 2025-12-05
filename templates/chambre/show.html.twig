@@ -24,18 +24,49 @@
                 <td>{{ chambre.area }}</td>
             </tr>
             <tr>
-                <th>PricePerNight</th>
+                <th>Price per Night</th>
                 <td>{{ chambre.pricePerNight }}</td>
             </tr>
             <tr>
-                <th>IsAvailable</th>
+                <th>Is Available</th>
                 <td>{{ chambre.isAvailable ? 'Yes' : 'No' }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_chambre_index') }}">back to list</a>
+    <!-- ➤ AFFICHAGE DES TRAVAUX -->
+    <h2>Travaux de cette chambre</h2>
 
+    {% if chambre.travaux|length == 0 %}
+        <p>Aucun travail pour cette chambre.</p>
+    {% else %}
+        <ul>
+            {% for t in chambre.travaux %}
+                <li>
+                    <strong>{{ t.title }}</strong><br>
+                    {{ t.description }}<br>
+                    Du {{ t.startDate|date('d/m/Y') }} au {{ t.endDate|date('d/m/Y') }}<br>
+
+                    {% if t.isDone %}
+    <span style="color: green; font-weight: bold;">Terminé</span>
+{% elseif t.endDate|date('U') < "now"|date('U') %}
+    <span style="color: orange; font-weight: bold;">En retard</span>
+{% else %}
+    <span style="color: red; font-weight: bold;">En cours</span>
+{% endif %}
+
+
+                    <br>
+                    <a href="{{ path('app_travaux_show', {'id': t.id}) }}">Voir</a> |
+                    <a href="{{ path('app_travaux_edit', {'id': t.id}) }}">Modifier</a>
+                </li>
+                <hr>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+
+    <a href="{{ path('app_chambre_index') }}">back to list</a>
     <a href="{{ path('app_chambre_edit', {'id': chambre.id}) }}">edit</a>
 
     {{ include('chambre/_delete_form.html.twig') }}

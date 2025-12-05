@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chambres en travaux{% endblock %}
+
+{% block body %}
+    <h1>Chambres actuellement en travaux</h1>
+
+    {% if chambres is empty %}
+        <p>Aucune chambre en travaux actuellement </p>
+    {% else %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Hôtel</th>
+                    <th>Chambre</th>
+                    <th>Travaux en cours</th>
+                    <th>Période</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for chambre in chambres %}
+                {% for t in chambre.travaux %}
+                    {% if not t.isDone and t.startDate|date('U') <= "now"|date('U') and t.endDate|date('U') >= "now"|date('U') %}
+                        <tr>
+                            <td>{{ chambre.hotel.name }}</td>
+                            <td>Chambre {{ chambre.number }}</td>
+                            <td>{{ t.title }}</td>
+                            <td>
+                                Du {{ t.startDate|date('d/m/Y') }}
+                                au {{ t.endDate|date('d/m/Y') }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <a href="{{ path('app_admin') }}">Retour au tableau de bord</a>
+{% endblock %}
