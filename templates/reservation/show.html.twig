@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la réservation{% endblock %}
+
+{% block body %}
+<div style="max-width: 800px; margin: 30px auto; padding: 20px;">
+    <h1>Détails de la réservation #{{ reservation.id }}</h1>
+
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h2 style="margin-top: 0;">Informations de la réservation</h2>
+        <table style="width: 100%;">
+            <tr>
+                <td style="padding: 10px; font-weight: bold;">Hôtel :</td>
+                <td style="padding: 10px;">{{ reservation.chambre.hotel.name }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; font-weight: bold;">Chambre :</td>
+                <td style="padding: 10px;">Chambre {{ reservation.chambre.number }} (Étage {{ reservation.chambre.floor }})</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; font-weight: bold;">Date d'arrivée :</td>
+                <td style="padding: 10px;">{{ reservation.checkIn|date('d/m/Y') }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; font-weight: bold;">Date de départ :</td>
+                <td style="padding: 10px;">{{ reservation.checkOut|date('d/m/Y') }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; font-weight: bold;">Nombre de nuits :</td>
+                <td style="padding: 10px;">{{ reservation.numberOfNights }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; font-weight: bold;">Prix par nuit :</td>
+                <td style="padding: 10px;">{{ reservation.chambre.pricePerNight|number_format(2, ',', ' ') }} €</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; font-weight: bold;">Prix total :</td>
+                <td style="padding: 10px;"><strong style="font-size: 18px; color: #28a745;">{{ reservation.totalPrice|number_format(2, ',', ' ') }} €</strong></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; font-weight: bold;">Statut :</td>
+                <td style="padding: 10px;">
+                    {% if reservation.status == 'confirmed' %}
+                        <span style="color: green; font-weight: bold;">✓ Confirmée</span>
+                    {% elseif reservation.status == 'pending' %}
+                        <span style="color: orange; font-weight: bold;">⏳ En attente</span>
+                    {% elseif reservation.status == 'cancelled' %}
+                        <span style="color: red; font-weight: bold;">✗ Annulée</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; font-weight: bold;">Date de création :</td>
+                <td style="padding: 10px;">{{ reservation.createdAt|date('d/m/Y à H:i') }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="margin-top: 20px;">
+        {% if reservation.status != 'cancelled' %}
+            <form method="post" action="{{ path('app_reservation_cancel', {'id': reservation.id}) }}" style="display: inline-block;">
+                <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ reservation.id) }}">
+                <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px;">
+                    Annuler la réservation
+                </button>
+            </form>
+        {% endif %}
+        <a href="{{ path('app_reservation_index') }}" style="display: inline-block; margin-left: 10px; padding: 10px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 4px;">
+            Retour à la liste
+        </a>
+    </div>
+</div>
+{% endblock %}

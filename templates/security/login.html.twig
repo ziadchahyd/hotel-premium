@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion Client{% endblock %}
+
+{% block body %}
+<div style="max-width: 500px; margin: 50px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+    <h1>Connexion Client</h1>
+
+    {% if error %}
+        <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
+
+    <form method="post" style="margin-top: 20px;">
+        <div style="margin-bottom: 15px;">
+            <label for="inputEmail">Email</label>
+            <input type="email" value="{{ last_username }}" name="_username" id="inputEmail" class="form-control" autocomplete="email" required autofocus style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label for="inputPassword">Mot de passe</label>
+            <input type="password" name="_password" id="inputPassword" class="form-control" autocomplete="current-password" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <button type="submit" style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px;">
+            Se connecter
+        </button>
+    </form>
+
+    <div style="margin-top: 20px; text-align: center;">
+        <p>Pas encore de compte ? <a href="{{ path('app_register') }}">S'inscrire</a></p>
+        <p><a href="{{ path('app_home') }}">Retour à l'accueil</a></p>
+    </div>
+</div>
+{% endblock %}

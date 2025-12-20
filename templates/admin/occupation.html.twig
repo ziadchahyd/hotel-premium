@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Occupation des Hôtels{% endblock %}
+
+{% block body %}
+<div style="max-width: 1200px; margin: 30px auto; padding: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h1 style="color: #2c3e50;">Occupation en temps réel</h1>
+        <div style="display: flex; gap: 10px;">
+            <a href="{{ path('app_admin_occupation_range') }}" style="display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 6px;">
+                Occupation sur plage de dates
+            </a>
+            <a href="{{ path('app_admin') }}" style="display: inline-block; padding: 10px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 6px;">
+                Retour au dashboard
+            </a>
+        </div>
+    </div>
+
+    <div style="display: grid; gap: 20px;">
+        {% for data in occupationData %}
+            <div style="padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h2 style="color: #2c3e50; margin-bottom: 15px;">{{ data.hotel.name }}</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <p style="margin: 5px 0;"><strong>Total chambres:</strong> {{ data.totalChambres }}</p>
+                        <p style="margin: 5px 0;"><strong>Chambres occupées:</strong> {{ data.occupiedChambres }}</p>
+                        <p style="margin: 5px 0;"><strong>Taux d'occupation:</strong> 
+                            <span style="color: {% if data.occupationRate >= 80 %}green{% elseif data.occupationRate >= 50 %}orange{% else %}red{% endif %}; font-weight: bold;">
+                                {{ data.occupationRate|number_format(1) }}%
+                            </span>
+                        </p>
+                    </div>
+                    <div style="width: 200px; height: 20px; background: #e9ecef; border-radius: 10px; overflow: hidden;">
+                        <div style="width: {{ data.occupationRate }}%; height: 100%; background: {% if data.occupationRate >= 80 %}#28a745{% elseif data.occupationRate >= 50 %}#ffc107{% else %}#dc3545{% endif %}; transition: width 0.3s;"></div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 50px; background: #f8f9fa; border-radius: 8px;">
+                <p style="color: #6c757d;">Aucun hôtel trouvé.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

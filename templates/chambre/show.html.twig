@@ -3,71 +3,220 @@
 {% block title %}Chambre{% endblock %}
 
 {% block body %}
-    <h1>Chambre</h1>
+<div style="max-width: 1200px; margin: 30px auto; padding: 20px;">
+    <h1 style="color: #2c3e50; margin-bottom: 30px;">Détails de la Chambre</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ chambre.id }}</td>
-            </tr>
-            <tr>
-                <th>Number</th>
-                <td>{{ chambre.number }}</td>
-            </tr>
-            <tr>
-                <th>Floor</th>
-                <td>{{ chambre.floor }}</td>
-            </tr>
-            <tr>
-                <th>Area</th>
-                <td>{{ chambre.area }}</td>
-            </tr>
-            <tr>
-                <th>Price per Night</th>
-                <td>{{ chambre.pricePerNight }}</td>
-            </tr>
-            <tr>
-                <th>Is Available</th>
-                <td>{{ chambre.isAvailable ? 'Yes' : 'No' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <!-- Informations principales de la chambre -->
+    <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px;">
+        <h2 style="color: #007bff; margin-bottom: 20px; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
+            Informations générales
+        </h2>
+        <table class="table" style="width: 100%; border-collapse: collapse;">
+            <tbody>
+                <tr style="border-bottom: 1px solid #dee2e6;">
+                    <th style="padding: 12px; text-align: left; width: 200px; color: #495057; font-weight: bold;">ID</th>
+                    <td style="padding: 12px;">{{ chambre.id }}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #dee2e6;">
+                    <th style="padding: 12px; text-align: left; color: #495057; font-weight: bold;">Numéro</th>
+                    <td style="padding: 12px;">
+                        <strong style="font-size: 18px; color: #007bff;">Chambre {{ chambre.number }}</strong>
+                    </td>
+                </tr>
+                <tr style="border-bottom: 1px solid #dee2e6;">
+                    <th style="padding: 12px; text-align: left; color: #495057; font-weight: bold;">Étage</th>
+                    <td style="padding: 12px;">Étage {{ chambre.floor }}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #dee2e6;">
+                    <th style="padding: 12px; text-align: left; color: #495057; font-weight: bold;">Superficie</th>
+                    <td style="padding: 12px;">{{ chambre.area }} m²</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #dee2e6;">
+                    <th style="padding: 12px; text-align: left; color: #495057; font-weight: bold;">Prix par nuit</th>
+                    <td style="padding: 12px;">
+                        <strong style="font-size: 18px; color: #28a745;">{{ chambre.pricePerNight|number_format(2, ',', ' ') }} €</strong>
+                    </td>
+                </tr>
+                <tr style="border-bottom: 1px solid #dee2e6;">
+                    <th style="padding: 12px; text-align: left; color: #495057; font-weight: bold;">Disponibilité</th>
+                    <td style="padding: 12px;">
+                        {% if chambre.isAvailable %}
+                            <span style="color: #28a745; font-weight: bold; padding: 5px 10px; background: #d4edda; border-radius: 4px;">✓ Disponible</span>
+                        {% else %}
+                            <span style="color: #dc3545; font-weight: bold; padding: 5px 10px; background: #f8d7da; border-radius: 4px;">✗ Indisponible</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr style="border-bottom: 1px solid #dee2e6;">
+                    <th style="padding: 12px; text-align: left; color: #495057; font-weight: bold;">Hôtel</th>
+                    <td style="padding: 12px;">
+                        {% if chambre.hotel %}
+                            <strong>{{ chambre.hotel.name }}</strong>
+                            {% if chambre.hotel.city %}
+                                <br><small style="color: #6c757d;">📍 {{ chambre.hotel.city }}</small>
+                            {% endif %}
+                        {% else %}
+                            <em style="color: #6c757d;">Aucun hôtel assigné</em>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-    <!-- ➤ AFFICHAGE DES TRAVAUX -->
-    <h2>Travaux de cette chambre</h2>
+    <!-- AFFICHAGE DU CLASSEMENT -->
+    <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px;">
+        <h2 style="color: #dc3545; margin-bottom: 20px; border-bottom: 2px solid #dc3545; padding-bottom: 10px;">
+            Classement et Prestations
+        </h2>
+        {% if chambre.classement %}
+            <div style="padding: 20px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #dc3545;">
+                <h3 style="color: #dc3545; margin-top: 0; margin-bottom: 10px;">
+                    {{ chambre.classement.name }}
+                </h3>
+                {% if chambre.classement.description %}
+                    <p style="color: #495057; margin-bottom: 15px; line-height: 1.6;">
+                        {{ chambre.classement.description }}
+                    </p>
+                {% endif %}
+                <div style="display: flex; align-items: center; gap: 15px; margin-top: 15px;">
+                    <span style="color: #6c757d; font-weight: bold;">Prix de base du classement:</span>
+                    <span style="font-size: 18px; color: #28a745; font-weight: bold;">
+                        {{ chambre.classement.basePrice|number_format(2, ',', ' ') }} €
+                    </span>
+                </div>
+            </div>
+        {% else %}
+            <div style="padding: 20px; background: #fff3cd; border-radius: 6px; border-left: 4px solid #ffc107;">
+                <p style="color: #856404; margin: 0;">
+                    <em>Aucun classement assigné à cette chambre</em>
+                </p>
+            </div>
+        {% endif %}
+    </div>
 
-    {% if chambre.travaux|length == 0 %}
-        <p>Aucun travail pour cette chambre.</p>
-    {% else %}
-        <ul>
-            {% for t in chambre.travaux %}
-                <li>
-                    <strong>{{ t.title }}</strong><br>
-                    {{ t.description }}<br>
-                    Du {{ t.startDate|date('d/m/Y') }} au {{ t.endDate|date('d/m/Y') }}<br>
+    <!-- AFFICHAGE DES SERVICES -->
+    <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px;">
+        <h2 style="color: #28a745; margin-bottom: 20px; border-bottom: 2px solid #28a745; padding-bottom: 10px;">
+            Services disponibles
+        </h2>
+        {% if chambre.services|length > 0 %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">
+                {% for service in chambre.services %}
+                    <div style="padding: 15px; background: #e7f3ff; border-radius: 6px; border-left: 4px solid #007bff;">
+                        <h4 style="color: #007bff; margin-top: 0; margin-bottom: 8px; font-size: 16px;">
+                            {{ service.name }}
+                        </h4>
+                        {% if service.description %}
+                            <p style="color: #495057; margin: 0; font-size: 14px; line-height: 1.5;">
+                                {{ service.description }}
+                            </p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="padding: 20px; background: #fff3cd; border-radius: 6px; border-left: 4px solid #ffc107;">
+                <p style="color: #856404; margin: 0;">
+                    <em>Aucun service disponible pour cette chambre</em>
+                </p>
+            </div>
+        {% endif %}
+    </div>
 
-                    {% if t.isDone %}
-    <span style="color: green; font-weight: bold;">Terminé</span>
-{% elseif t.endDate|date('U') < "now"|date('U') %}
-    <span style="color: orange; font-weight: bold;">En retard</span>
-{% else %}
-    <span style="color: red; font-weight: bold;">En cours</span>
-{% endif %}
+    <!-- AFFICHAGE DES TRAVAUX -->
+    <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px;">
+        <h2 style="color: #17a2b8; margin-bottom: 20px; border-bottom: 2px solid #17a2b8; padding-bottom: 10px;">
+            Travaux de cette chambre
+        </h2>
 
+        {% if chambre.travaux|length == 0 %}
+            <div style="padding: 20px; background: #d1ecf1; border-radius: 6px; border-left: 4px solid #17a2b8;">
+                <p style="color: #0c5460; margin: 0;">
+                    <em>Aucun travail planifié pour cette chambre</em>
+                </p>
+            </div>
+        {% else %}
+            <div style="display: grid; gap: 15px;">
+                {% for t in chambre.travaux %}
+                    <div style="padding: 20px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid 
+                        {% if t.isDone %}#28a745
+                        {% elseif t.endDate|date('U') < "now"|date('U') %}#ffc107
+                        {% else %}#17a2b8
+                        {% endif %};">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                            <h4 style="margin: 0; color: #2c3e50; font-size: 18px;">
+                                {{ t.title }}
+                            </h4>
+                            <span style="padding: 5px 12px; border-radius: 4px; font-weight: bold; font-size: 12px;
+                                {% if t.isDone %}
+                                    color: #155724; background: #d4edda;
+                                {% elseif t.endDate|date('U') < "now"|date('U') %}
+                                    color: #856404; background: #fff3cd;
+                                {% else %}
+                                    color: #0c5460; background: #d1ecf1;
+                                {% endif %}">
+                                {% if t.isDone %}
+                                    Terminé
+                                {% elseif t.endDate|date('U') < "now"|date('U') %}
+                                    En retard
+                                {% else %}
+                                    En cours
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% if t.description %}
+                            <p style="color: #495057; margin-bottom: 10px; line-height: 1.6;">
+                                {{ t.description }}
+                            </p>
+                        {% endif %}
+                        <div style="display: flex; gap: 20px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #dee2e6;">
+                            <div>
+                                <strong style="color: #6c757d; font-size: 12px;">Date de début:</strong>
+                                <span style="color: #495057;">{{ t.startDate|date('d/m/Y') }}</span>
+                            </div>
+                            <div>
+                                <strong style="color: #6c757d; font-size: 12px;">Date de fin:</strong>
+                                <span style="color: #495057;">{{ t.endDate|date('d/m/Y') }}</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <a href="{{ path('app_travaux_show', {'id': t.id}) }}" 
+                               style="color: #007bff; text-decoration: none; margin-right: 15px; font-size: 14px;">
+                                Voir les détails
+                            </a>
+                            <a href="{{ path('app_travaux_edit', {'id': t.id}) }}" 
+                               style="color: #ffc107; text-decoration: none; font-size: 14px;">
+                                Modifier
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 
-                    <br>
-                    <a href="{{ path('app_travaux_show', {'id': t.id}) }}">Voir</a> |
-                    <a href="{{ path('app_travaux_edit', {'id': t.id}) }}">Modifier</a>
-                </li>
-                <hr>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <!-- Actions -->
+    <div style="display: flex; gap: 15px; margin-top: 30px; padding-top: 20px; border-top: 2px solid #dee2e6;">
+        <a href="{{ path('app_chambre_index') }}" 
+           style="display: inline-block; padding: 10px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
+            Retour à la liste
+        </a>
+        <a href="{{ path('app_chambre_edit', {'id': chambre.id}) }}" 
+           style="display: inline-block; padding: 10px 20px; background: #ffc107; color: #856404; text-decoration: none; border-radius: 6px; font-weight: bold;">
+            Modifier
+        </a>
+        {% if chambre.hotel %}
+            <a href="{{ path('app_hotel_show', {'id': chambre.hotel.id}) }}" 
+               style="display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
+                Voir l'hôtel
+            </a>
+        {% endif %}
+    </div>
 
-
-    <a href="{{ path('app_chambre_index') }}">back to list</a>
-    <a href="{{ path('app_chambre_edit', {'id': chambre.id}) }}">edit</a>
-
-    {{ include('chambre/_delete_form.html.twig') }}
+    <!-- Formulaire de suppression -->
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6;">
+        {{ include('chambre/_delete_form.html.twig') }}
+    </div>
+</div>
 {% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Occupation sur plage de dates{% endblock %}
+
+{% block body %}
+<div style="max-width: 1200px; margin: 30px auto; padding: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h1 style="color: #2c3e50;">Occupation sur plage de dates</h1>
+        <div style="display: flex; gap: 10px;">
+            <a href="{{ path('app_admin_occupation') }}" style="display: inline-block; padding: 10px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 6px;">
+                Occupation temps réel
+            </a>
+            <a href="{{ path('app_admin') }}" style="display: inline-block; padding: 10px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 6px;">
+                Retour au dashboard
+            </a>
+        </div>
+    </div>
+
+
+
+    <!-- Résultats de l'occupation -->
+    <div style="display: grid; gap: 20px;">
+        {% for data in occupationData %}
+            <div style="padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h2 style="color: #2c3e50; margin-bottom: 15px;">{{ data.hotel.name }}</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <p style="margin: 5px 0;"><strong>Total chambres:</strong> {{ data.totalChambres }}</p>
+                        <p style="margin: 5px 0;"><strong>Chambres occupées:</strong> {{ data.occupiedChambres }}</p>
+                        <p style="margin: 5px 0;"><strong>Taux d'occupation:</strong> 
+                            <span style="color: {% if data.occupationRate >= 80 %}#28a745{% elseif data.occupationRate >= 50 %}#ffc107{% else %}#dc3545{% endif %}; font-weight: bold; font-size: 18px;">
+                                {{ data.occupationRate|number_format(1) }}%
+                            </span>
+                        </p>
+                        <p style="margin: 5px 0; color: #6c757d; font-size: 14px;">
+                            Chambres libres: {{ data.totalChambres - data.occupiedChambres }}
+                        </p>
+                    </div>
+                    <div style="width: 300px;">
+                        <div style="width: 100%; height: 30px; background: #e9ecef; border-radius: 15px; overflow: hidden; position: relative;">
+                            <div 
+                                style="width: {{ data.occupationRate }}%; height: 100%; background: {% if data.occupationRate >= 80 %}#28a745{% elseif data.occupationRate >= 50 %}#ffc107{% else %}#dc3545{% endif %}; transition: width 0.3s; display: flex; align-items: center; justify-content: center;">
+                                <span style="color: white; font-weight: bold; font-size: 12px;">
+                                    {{ data.occupationRate|number_format(1) }}%
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Détails des chambres occupées -->
+                {% if data.occupiedChambresList|length > 0 %}
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #dee2e6;">
+                        <h3 style="color: #495057; margin-bottom: 15px; font-size: 16px;">Chambres réservées pendant cette période :</h3>
+                        <div style="display: grid; gap: 10px;">
+                            {% for item in data.occupiedChambresList %}
+                                <div style="padding: 15px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #007bff;">
+                                    <p style="margin: 0 0 10px 0; font-weight: bold; color: #2c3e50;">
+                                        Chambre {{ item.chambre.number }} (Étage {{ item.chambre.floor }})
+                                    </p>
+                                    <div style="display: grid; gap: 5px;">
+                                        {% for reservation in item.reservations %}
+                                            <div style="padding: 10px; background: white; border-radius: 4px; border: 1px solid #dee2e6;">
+                                                <p style="margin: 0; font-size: 14px;">
+                                                    <strong>Client:</strong> {{ reservation.client.email }}
+                                                    {% if reservation.client.firstName or reservation.client.lastName %}
+                                                        ({{ reservation.client.firstName }} {{ reservation.client.lastName }})
+                                                    {% endif %}
+                                                </p>
+                                                <p style="margin: 5px 0 0 0; font-size: 14px;">
+                                                    <strong>Période:</strong> 
+                                                    Du {{ reservation.checkIn|date('d/m/Y') }} au {{ reservation.checkOut|date('d/m/Y') }}
+                                                    ({{ reservation.numberOfNights }} nuit(s))
+                                                </p>
+                                                <p style="margin: 5px 0 0 0; font-size: 14px;">
+                                                    <strong>Statut:</strong> 
+                                                    <span style="color: {% if reservation.status == 'confirmed' %}#28a745{% elseif reservation.status == 'pending' %}#ffc107{% else %}#dc3545{% endif %}; font-weight: bold;">
+                                                        {% if reservation.status == 'confirmed' %}
+                                                            Confirmée
+                                                        {% elseif reservation.status == 'pending' %}
+                                                            En attente
+                                                        {% else %}
+                                                            {{ reservation.status }}
+                                                        {% endif %}
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 50px; background: #f8f9fa; border-radius: 8px;">
+                <p style="color: #6c757d;">Aucun hôtel trouvé.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -49,10 +49,17 @@ class Chambre
     #[ORM\OneToMany(targetEntity: Travaux::class, mappedBy: 'chambre')]
     private Collection $travaux;
 
+    /**
+     * @var Collection<int, Reservation>
+     */
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'chambre')]
+    private Collection $reservations;
+
     public function __construct()
     {
         $this->services = new ArrayCollection();
         $this->travaux = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -192,6 +199,36 @@ class Chambre
             // set the owning side to null (unless already changed)
             if ($travaux->getChambre() === $this) {
                 $travaux->setChambre(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reservation>
+     */
+    public function getReservations(): Collection
+    {
+        return $this->reservations;
+    }
+
+    public function addReservation(Reservation $reservation): static
+    {
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations->add($reservation);
+            $reservation->setChambre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservation(Reservation $reservation): static
+    {
+        if ($this->reservations->removeElement($reservation)) {
+            // set the owning side to null (unless already changed)
+            if ($reservation->getChambre() === $this) {
+                $reservation->setChambre(null);
             }
         }
 

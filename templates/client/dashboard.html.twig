@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord Client{% endblock %}
+
+{% block body %}
+<div style="max-width: 1200px; margin: 20px auto; padding: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h1>Bienvenue, {{ client.firstName ?? client.email }} !</h1>
+        <a href="{{ path('client_logout') }}" style="display: inline-block; padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 4px;">
+            Se déconnecter
+        </a>
+    </div>
+    
+    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <h2>Informations du compte</h2>
+        <p><strong>Email :</strong> {{ client.email }}</p>
+        {% if client.firstName %}
+            <p><strong>Prénom :</strong> {{ client.firstName }}</p>
+        {% endif %}
+        {% if client.lastName %}
+            <p><strong>Nom :</strong> {{ client.lastName }}</p>
+        {% endif %}
+        <p><strong>Membre depuis :</strong> {{ client.createdAt|date('d/m/Y') }}</p>
+    </div>
+
+    <div style="background: #e7f3ff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 style="margin: 0;">Mes réservations</h2>
+            <a href="{{ path('app_reservation_new') }}" style="display: inline-block; padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+                + Nouvelle réservation
+            </a>
+        </div>
+
+        {% if reservations is empty %}
+            <div style="text-align: center; padding: 30px;">
+                <p style="color: #6c757d; font-size: 18px;">Vous n'avez pas encore de réservation.</p>
+                <a href="{{ path('app_reservation_new') }}" style="display: inline-block; margin-top: 15px; padding: 12px 25px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; font-size: 16px;">
+                    Créer ma première réservation
+                </a>
+            </div>
+        {% else %}
+            <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                <thead>
+                    <tr style="background: #dee2e6;">
+                        <th style="padding: 12px; text-align: left; border: 1px solid #adb5bd;">Hôtel</th>
+                        <th style="padding: 12px; text-align: left; border: 1px solid #adb5bd;">Chambre</th>
+                        <th style="padding: 12px; text-align: left; border: 1px solid #adb5bd;">Arrivée</th>
+                        <th style="padding: 12px; text-align: left; border: 1px solid #adb5bd;">Départ</th>
+                        <th style="padding: 12px; text-align: left; border: 1px solid #adb5bd;">Nuits</th>
+                        <th style="padding: 12px; text-align: left; border: 1px solid #adb5bd;">Prix total</th>
+                        <th style="padding: 12px; text-align: left; border: 1px solid #adb5bd;">Statut</th>
+                        <th style="padding: 12px; text-align: left; border: 1px solid #adb5bd;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reservation in reservations %}
+                        <tr>
+                            <td style="padding: 12px; border: 1px solid #dee2e6;">{{ reservation.chambre.hotel.name }}</td>
+                            <td style="padding: 12px; border: 1px solid #dee2e6;">Chambre {{ reservation.chambre.number }}</td>
+                            <td style="padding: 12px; border: 1px solid #dee2e6;">{{ reservation.checkIn|date('d/m/Y') }}</td>
+                            <td style="padding: 12px; border: 1px solid #dee2e6;">{{ reservation.checkOut|date('d/m/Y') }}</td>
+                            <td style="padding: 12px; border: 1px solid #dee2e6;">{{ reservation.numberOfNights }}</td>
+                            <td style="padding: 12px; border: 1px solid #dee2e6;"><strong>{{ reservation.totalPrice|number_format(2, ',', ' ') }} €</strong></td>
+                            <td style="padding: 12px; border: 1px solid #dee2e6;">
+                                {% if reservation.status == 'confirmed' %}
+                                    <span style="color: green; font-weight: bold;">✓ Confirmée</span>
+                                {% elseif reservation.status == 'pending' %}
+                                    <span style="color: orange; font-weight: bold;">⏳ En attente</span>
+                                {% elseif reservation.status == 'cancelled' %}
+                                    <span style="color: red; font-weight: bold;">✗ Annulée</span>
+                                {% else %}
+                                    <span style="color: gray;">{{ reservation.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 12px; border: 1px solid #dee2e6;">
+                                <a href="{{ path('app_reservation_show', {'id': reservation.id}) }}" style="color: #007bff; text-decoration: none; margin-right: 10px;">Voir</a>
+                                {% if reservation.status != 'cancelled' %}
+                                    <form method="post" action="{{ path('app_reservation_cancel', {'id': reservation.id}) }}" style="display: inline-block;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ reservation.id) }}">
+                                        <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                                            Annuler
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div style="margin-top: 15px; text-align: center;">
+                <a href="{{ path('app_reservation_index') }}" style="color: #007bff; text-decoration: none;">Voir toutes mes réservations →</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

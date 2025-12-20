@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hôtels Premium - Accueil{% endblock %}
+
+{% block body %}
+<div style="max-width: 1200px; margin: 50px auto; padding: 20px; text-align: center;">
+    <h1 style="color: #2c3e50; margin-bottom: 50px;">Bienvenue chez Hôtels Premium</h1>
+    
+    <div style="display: flex; justify-content: space-around; gap: 30px; margin-top: 50px;">
+        <div style="flex: 1; padding: 40px; background: #e7f3ff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h2 style="color: #007bff; margin-bottom: 20px;">Espace Client</h2>
+            <p style="margin-bottom: 30px; color: #6c757d;">Réservez votre chambre et gérez vos réservations</p>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <a href="{{ path('client_login') }}" style="display: inline-block; padding: 15px 30px; background: #007bff; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">
+                    Se connecter
+                </a>
+                <a href="{{ path('app_register') }}" style="display: inline-block; padding: 15px 30px; background: #28a745; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">
+                    S'inscrire
+                </a>
+            </div>
+        </div>
+        
+        <div style="flex: 1; padding: 40px; background: #fff3cd; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h2 style="color: #856404; margin-bottom: 20px;">Espace Administrateur</h2>
+            <p style="margin-bottom: 30px; color: #6c757d;">Gérez les hôtels, chambres et services</p>
+            <a href="/admin/login" style="display: inline-block; padding: 15px 30px; background: #ffc107; color: #856404; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">
+                Connexion Admin
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

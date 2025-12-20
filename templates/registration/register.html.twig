@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+<div style="max-width: 500px; margin: 50px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+    <h1>Inscription</h1>
+
+    {% for message in app.flashes('success') %}
+        <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {{ form_start(registrationForm, {'attr': {'style': 'margin-top: 20px;'}}) }}
+        <div style="margin-bottom: 15px;">
+            {{ form_label(registrationForm.email) }}
+            {{ form_widget(registrationForm.email, {'attr': {'style': 'width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;'}}) }}
+            {{ form_errors(registrationForm.email) }}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            {{ form_label(registrationForm.firstName) }}
+            {{ form_widget(registrationForm.firstName, {'attr': {'style': 'width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;'}}) }}
+            {{ form_errors(registrationForm.firstName) }}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            {{ form_label(registrationForm.lastName) }}
+            {{ form_widget(registrationForm.lastName, {'attr': {'style': 'width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;'}}) }}
+            {{ form_errors(registrationForm.lastName) }}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            {{ form_label(registrationForm.plainPassword.first) }}
+            {{ form_widget(registrationForm.plainPassword.first, {'attr': {'style': 'width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;'}}) }}
+            {{ form_errors(registrationForm.plainPassword.first) }}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            {{ form_label(registrationForm.plainPassword.second) }}
+            {{ form_widget(registrationForm.plainPassword.second, {'attr': {'style': 'width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;'}}) }}
+            {{ form_errors(registrationForm.plainPassword.second) }}
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px;">
+            S'inscrire
+        </button>
+    {{ form_end(registrationForm) }}
+
+    <div style="margin-top: 20px; text-align: center;">
+        <p>Déjà un compte ? <a href="{{ path('client_login') }}">Se connecter</a></p>
+        <p><a href="{{ path('app_home') }}">Retour à l'accueil</a></p>
+    </div>
+</div>
+{% endblock %}

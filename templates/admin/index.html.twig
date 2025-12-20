@@ -1,19 +1,70 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Administration{% endblock %}
+{% block title %}Dashboard Administrateur{% endblock %}
 
 {% block body %}
-    <h1>Tableau de bord Administrateur</h1>
-
-    <ul>
-        <li><a href="{{ path('app_hotel_index') }}">Gérer les Hôtels</a></li>
-        <li><a href="{{ path('app_chambre_index') }}">Gérer les Chambres</a></li>
-        <li><a href="{{ path('app_classement_h_index') }}">Gérer les Classements</a></li>
-        <li><a href="{{ path('app_service_index') }}">Gérer les Services</a></li>
-        <li><a href="{{ path('app_travaux_index') }}">Gérer les Travaux</a></li>
-        <li><a href="{{ path('app_travaux_late') }}">Travaux en retard</a></li>
-        <li><a href="{{ path('app_chambre_en_travaux') }}">Chambres en travaux</a></li>
-
-    </ul>
-
+<div style="max-width: 1200px; margin: 30px auto; padding: 20px;">
+    <h1 style="color: #2c3e50; margin-bottom: 30px;">Dashboard Administrateur</h1>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 30px;">
+        <div style="padding: 30px; background: #e7f3ff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h2 style="color: #007bff; margin-bottom: 15px;">Hôtels</h2>
+            <p style="margin-bottom: 20px; color: #6c757d;">Gérer les hôtels</p>
+            <a href="{{ path('app_hotel_index') }}" style="display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 6px;">
+                Gérer les hôtels
+            </a>
+        </div>
+        
+        <div style="padding: 30px; background: #fff3cd; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h2 style="color: #856404; margin-bottom: 15px;">Chambres</h2>
+            <p style="margin-bottom: 20px; color: #6c757d;">Gérer les chambres</p>
+            <a href="{{ path('app_chambre_index') }}" style="display: inline-block; padding: 10px 20px; background: #ffc107; color: #856404; text-decoration: none; border-radius: 6px;">
+                Gérer les chambres
+            </a>
+        </div>
+        
+        <div style="padding: 30px; background: #d4edda; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h2 style="color: #155724; margin-bottom: 15px;">Services</h2>
+            <p style="margin-bottom: 20px; color: #6c757d;">Gérer les services</p>
+            <a href="{{ path('app_service_index') }}" style="display: inline-block; padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 6px;">
+                Gérer les services
+            </a>
+        </div>
+        
+        <div style="padding: 30px; background: #f8d7da; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h2 style="color: #721c24; margin-bottom: 15px;">Classements</h2>
+            <p style="margin-bottom: 20px; color: #6c757d;">Gérer les classements</p>
+            <a href="{{ path('app_classement_h_index') }}" style="display: inline-block; padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 6px;">
+                Gérer les classements
+            </a>
+        </div>
+        
+        <div style="padding: 30px; background: #d1ecf1; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h2 style="color: #0c5460; margin-bottom: 15px;">Travaux</h2>
+            <p style="margin-bottom: 20px; color: #6c757d;">Gérer les travaux</p>
+            <a href="{{ path('app_travaux_index') }}" style="display: inline-block; padding: 10px 20px; background: #17a2b8; color: white; text-decoration: none; border-radius: 6px;">
+                Gérer les travaux
+            </a>
+        </div>
+        
+        <div style="padding: 30px; background: #e2e3e5; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h2 style="color: #383d41; margin-bottom: 15px;">Occupation</h2>
+            <p style="margin-bottom: 20px; color: #6c757d;">Suivre l'occupation</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="{{ path('app_admin_occupation') }}" style="display: inline-block; padding: 10px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 6px; text-align: center;">
+                    Temps réel
+                </a>
+                <a href="{{ path('app_admin_occupation_range') }}" style="display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 6px; text-align: center;">
+                    Sur plage de dates
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="{{ path('admin_logout') }}" style="display: inline-block; padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 6px;">
+            Déconnexion
+        </a>
+    </div>
+</div>
 {% endblock %}

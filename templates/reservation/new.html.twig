@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle réservation{% endblock %}
+
+{% block body %}
+<div style="max-width: 800px; margin: 30px auto; padding: 20px;">
+    <h1>Nouvelle réservation</h1>
+
+    {% for message in app.flashes('error') %}
+        <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('success') %}
+        <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {{ form_start(form, {'attr': {'style': 'margin-top: 20px;'}}) }}
+        <div style="margin-bottom: 15px;">
+            {{ form_label(form.hotel) }}
+            {{ form_widget(form.hotel, {'attr': {'style': 'width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;'}}) }}
+            {{ form_errors(form.hotel) }}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            {{ form_label(form.checkIn) }}
+            {{ form_widget(form.checkIn, {'attr': {'style': 'width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;'}}) }}
+            {{ form_errors(form.checkIn) }}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            {{ form_label(form.checkOut) }}
+            {{ form_widget(form.checkOut, {'attr': {'style': 'width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;'}}) }}
+            {{ form_errors(form.checkOut) }}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            {{ form_label(form.chambre) }}
+            {{ form_widget(form.chambre, {'attr': {'style': 'width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;'}}) }}
+            {{ form_errors(form.chambre) }}
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px;">
+            Réserver
+        </button>
+    {{ form_end(form) }}
+
+    <div style="margin-top: 20px;">
+        <a href="{{ path('app_client_dashboard') }}" style="color: #007bff; text-decoration: none;">
+            ← Retour au dashboard
+        </a>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Trouver les éléments par leur nom ou ID généré par Symfony
+    const form = document.querySelector('form');
+    const hotelSelect = form.querySelector('[id*="hotel"]') || form.querySelector('select[name*="hotel"]');
+    const checkInInput = form.querySelector('[id*="checkIn"]') || form.querySelector('input[name*="checkIn"]');
+    const checkOutInput = form.querySelector('[id*="checkOut"]') || form.querySelector('input[name*="checkOut"]');
+    const chambreSelect = form.querySelector('[id*="chambre"]') || form.querySelector('select[name*="chambre"]');
+
+    if (!hotelSelect || !checkInInput || !checkOutInput || !chambreSelect) {
+        console.error('Impossible de trouver les champs du formulaire');
+        return;
+    }
+
+    function formatDateForAPI(dateString) {
+        // Convertir le format français (dd/mm/yyyy) en format ISO (yyyy-mm-dd)
+        if (dateString.includes('/')) {
+            const parts = dateString.split('/');
+            if (parts.length === 3) {
+                return parts[2] + '-' + parts[1] + '-' + parts[0];
+            }
+        }
+        // Si déjà au format ISO, retourner tel quel
+        return dateString;
+    }
+
+    function updateChambres() {
+        const hotelId = hotelSelect.value;
+        let checkIn = checkInInput.value;
+        let checkOut = checkOutInput.value;
+
+        // Réinitialiser le select
+        chambreSelect.innerHTML = '<option value="">Chargement...</option>';
+        chambreSelect.disabled = true;
+
+        if (!hotelId || !checkIn || !checkOut) {
+            chambreSelect.innerHTML = '<option value="">Choisir d\'abord un hôtel et les dates</option>';
+            chambreSelect.disabled = false;
+            return;
+        }
+
+        // Convertir les dates au format ISO si nécessaire
+        checkIn = formatDateForAPI(checkIn);
+        checkOut = formatDateForAPI(checkOut);
+
+        // Vérifier que la date de départ est après la date d'arrivée
+        const checkInDate = new Date(checkIn);
+        const checkOutDate = new Date(checkOut);
+        
+        if (checkOutDate <= checkInDate) {
+            chambreSelect.innerHTML = '<option value="">La date de départ doit être après la date d\'arrivée</option>';
+            chambreSelect.disabled = false;
+            return;
+        }
+
+        // Appeler l'API pour récupérer les chambres disponibles
+        const apiUrl = '{{ path('app_api_chambres_disponibles') }}?hotel=' + encodeURIComponent(hotelId) + 
+                      '&checkIn=' + encodeURIComponent(checkIn) + 
+                      '&checkOut=' + encodeURIComponent(checkOut);
+        
+        console.log('Appel API:', apiUrl); // Pour debug
+        
+        fetch(apiUrl)
+            .then(response => {
+                console.log('Réponse API:', response.status);
+                if (!response.ok) {
+                    throw new Error('Erreur HTTP: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Données reçues:', data); // Pour debug
+                chambreSelect.innerHTML = '';
+                
+                if (!data.chambres || data.chambres.length === 0) {
+                    chambreSelect.innerHTML = '<option value="">Aucune chambre disponible pour ces dates</option>';
+                } else {
+                    chambreSelect.innerHTML = '<option value="">Choisir une chambre</option>';
+                    data.chambres.forEach(chambre => {
+                        const option = document.createElement('option');
+                        option.value = chambre.id;
+                        option.textContent = chambre.label;
+                        chambreSelect.appendChild(option);
+                    });
+                }
+                chambreSelect.disabled = false;
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement des chambres:', error);
+                chambreSelect.innerHTML = '<option value="">Erreur lors du chargement des chambres</option>';
+                chambreSelect.disabled = false;
+            });
+    }
+
+    // Écouter les changements
+    hotelSelect.addEventListener('change', updateChambres);
+    checkInInput.addEventListener('change', updateChambres);
+    checkInInput.addEventListener('blur', updateChambres);
+    checkOutInput.addEventListener('change', updateChambres);
+    checkOutInput.addEventListener('blur', updateChambres);
+    
+    // Mettre à jour au chargement si les champs sont déjà remplis
+    if (hotelSelect.value && checkInInput.value && checkOutInput.value) {
+        updateChambres();
+    }
+});
+</script>
+{% endblock %}
